@@ -45,6 +45,13 @@ TST utilizes several powerful Firefox-exclusive features to manage tabs. These f
     *   *Chrome Equivalent:* Chrome extensions cannot query the active browser theme colors in the same programmatic way.
     *   *Impact:* Theme matching will likely need to be simplified to a basic `prefers-color-scheme: dark` media query or rely on user-selected settings.
 *   **`browser.runtime.getBrowserInfo()`:** Used for platform-specific bug workarounds. Does not exist in Chrome.
+*   **`browser.sessions` (Tab and Window State):** TST heavily uses `browser.sessions.setTabValue`, `getTabValue`, and `setWindowValue` to persist tree structure, unique tab IDs, and tab relationships.
+    *   *Impact*: These APIs are missing in Chrome. TST relies on them because Firefox automatically manages this data lifecycle—binding it directly to the tab/window session and automatically restoring custom metadata (like Unique IDs) when a closed tab is restored.
+    *   *Chrome Alternative*: Chrome does not natively attach custom metadata to restored tabs. To mitigate this, one would have to use `chrome.storage.local` combined with complex heuristic matching (e.g., mapping restored tab URLs/titles against a custom-stored history of closed tabs) to re-associate restored tabs with their old TST metadata. This approach requires careful manual synchronization, handling of asynchronous read/writes, and garbage collection to prevent memory leaks when tabs are permanently closed.
+    *   *POC Approach*: For the initial proof-of-concept (POC), using an in-memory map will be sufficient, meaning restored tabs will simply be treated as completely new tabs.
+*   **`browser.menus` (Dynamic Context Menus):** TST dynamically constructs context menus for tabs in the sidebar using `browser.menus.overrideContext()`, `browser.menus.onShown`, and `browser.menus.onHidden`.
+    *   *Impact*: Chrome's equivalent `chrome.contextMenus` API lacks these methods and events. Chrome strictly requires context menus to be pre-defined rather than dynamically generated or overridden exactly when shown.
+    *   *POC Approach*: For the initial proof-of-concept (POC), it is sufficient to stub out or remove the dynamic context menu feature entirely.
 
 ---
 
