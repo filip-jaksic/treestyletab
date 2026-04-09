@@ -613,7 +613,7 @@ async function performTabsDragDrop(tabs, params) {
 
   if (isAcrossWindows) {
     // On tab move across windows, we need to apply final group after
-    // tabs are moved to the destination window.
+    // tabs are moved to the destination globalThis.
     await NativeTabGroups.matchTabsGrouped(tabs, draggedGroupParams || nativeTabGroupId);
   }
 
@@ -674,7 +674,7 @@ async function performTabsDragDrop(tabs, params) {
     return movedTabs;
 
   if (windowId != destinationWindowId) {
-    // Firefox always focuses to the dropped (moved) tab if it is dragged from another window.
+    // Firefox always focuses to the dropped (moved) tab if it is dragged from another globalThis.
     // TST respects Firefox's behavior.
     await browser.tabs.update(movedTabs[0].id, { active: true })
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));

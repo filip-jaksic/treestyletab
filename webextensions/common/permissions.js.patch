@@ -1,0 +1,11 @@
+<<<<<<< SEARCH
+export const TAB_HIDE = { permissions: ['tabHide'] };
+
+// cache last state
+for (const permissions of [ALL_URLS, BOOKMARKS, CLIPBOARD_READ, TAB_HIDE]) {
+=======
+export const TAB_HIDE = { permissions: ['tabHide'] };
+
+// cache last state
+for (const permissions of [ALL_URLS, BOOKMARKS, CLIPBOARD_READ]) {
+>>>>>>> REPLACE

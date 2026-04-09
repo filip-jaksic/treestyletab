@@ -1,0 +1,5 @@
+<<<<<<< SEARCH
+export const isFirefox = true; // FIXME: check UA or something later
+=======
+export const isFirefox = typeof browser !== 'undefined' && typeof chrome === 'undefined'; // FIXME: check UA or something later
+>>>>>>> REPLACE

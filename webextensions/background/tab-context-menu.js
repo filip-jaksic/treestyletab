@@ -329,7 +329,7 @@ function getItemPlacementSignature(item) {
 export async function init() {
   mInitialized = true;
 
-  window.addEventListener('unload', () => {
+  globalThis.addEventListener('unload', () => {
     browser.runtime.onMessage.removeListener(onMessage);
     TSTAPI.onMessageExternal.removeListener(onMessageExternal);
   }, { once: true });
@@ -460,7 +460,7 @@ function updateNativeTabGroups(contextTab) {
   });
 
   const defaultTitle = browser.i18n.getMessage('tabContextMenu_addToGroup_unnamed_label');
-  const darkSuffix = window.matchMedia('(prefers-color-scheme: dark)').matches ? '-invert' : '';
+  const darkSuffix = globalThis.matchMedia('(prefers-color-scheme: dark)').matches ? '-invert' : '';
   const groups = getEffectiveTabGroups(contextTab.windowId);
   for (const group of groups) {
     if (contextTab.groupId == group.id) {

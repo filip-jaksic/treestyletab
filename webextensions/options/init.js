@@ -4,6 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 'use strict';
+import '/chrome-polyfill.js';
 
 import Options from '/extlib/Options.js';
 import '/extlib/l10n.js';

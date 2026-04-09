@@ -231,7 +231,7 @@ const mTabSeparator = {
   type:                'separator',
   contexts:            ['tab'],
   viewTypes:           ['sidebar'],
-  documentUrlPatterns: [`moz-extension://${window.location.host}/*`],
+  documentUrlPatterns: [`moz-extension://${globalThis.location.host}/*`],
   visible:             false,
   lastVisible:         false
 };
@@ -312,7 +312,7 @@ const mBookmarkSeparator = {
   type:                'separator',
   contexts:            ['bookmark'],
   viewTypes:           ['sidebar'],
-  documentUrlPatterns: [`moz-extension://${window.location.host}/*`],
+  documentUrlPatterns: [`moz-extension://${globalThis.location.host}/*`],
   visible:             false,
   lastVisible:         false
 };
@@ -357,7 +357,7 @@ function reserveToRefreshItems() {
   if (reserveToRefreshItems.invoked)
     return;
   reserveToRefreshItems.invoked = true;
-  setTimeout(() => { // because window.requestAnimationFrame is decelerated for an invisible document.
+  setTimeout(() => { // because globalThis.requestAnimationFrame is decelerated for an invisible document.
     reserveToRefreshItems.invoked = false;
     addTabItems();
     addBookmarkItems();
