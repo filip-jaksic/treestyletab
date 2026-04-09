@@ -67,55 +67,7 @@ TST constructs its tree hierarchy by tracking which tab opened which. It relies 
 
 ---
 
-
----
-
-## 6. The `browser.sessions` API (Tab and Window State Persistence)
-
-TST heavily relies on Firefox's `browser.sessions.setTabValue`, `getTabValue`, `setWindowValue`, and `getWindowValue` APIs. These APIs allow extensions to store arbitrary data associated with a specific tab or window, and crucially, **this data persists and is automatically restored across browser restarts** when a user's session is restored.
-
-*   **Current Usage in TST:**
-    *   Tracking persistent unique IDs for tabs across sessions.
-    *   Storing the tree structure (parent/child/ancestor relationships).
-    *   Storing UI states (e.g., whether a subtree is collapsed or expanded).
-    *   Caching sidebar states and subpanel heights.
-*   **Chrome Equivalent:** None natively. Chrome's `chrome.sessions` API only supports retrieving recently closed tabs/windows and does not support storing custom key-value data on tabs.
-*   **Impact:** Without a replacement, TST will lose the tree structure and all tab groupings when Chrome is restarted.
-
-### Mitigation Strategies
-
-To handle this in Chrome, we must implement our own state management. Here are the potential approaches:
-
-#### 1. In-Memory Store (Hashmap in Service Worker)
-For a Proof of Concept (POC), we can store the tab/window data in a simple JavaScript `Map` or Object within the Background Service Worker.
-*   **Pros:** Extremely simple to implement. Fast synchronous access.
-*   **Cons:** State is completely lost when the Service Worker terminates (which happens frequently in MV3) or when the browser restarts.
-*   **Mitigation for SW Termination:** We can force the Service Worker to stay alive by maintaining a persistent connection (e.g., via `chrome.runtime.connect`) from the active `sidePanel`. As long as the TST sidebar is open, the in-memory state remains intact.
-
-#### 2. `chrome.storage.session` API
-Chrome 102+ introduced `chrome.storage.session`, which holds data in memory for the duration of the browser session.
-*   **Pros:** Built-in API. Survives Service Worker restarts.
-*   **Cons:** Data is cleared entirely when the browser is completely closed. Does not solve the "restoring tree on browser restart" problem. Maximum capacity is limited (10MB).
-
-#### 3. `chrome.storage.local` with Manual Mapping
-We can serialize the tab/window state and save it to persistent disk storage using `chrome.storage.local`. We would key the data by the Tab ID.
-*   **Pros:** Data persists across browser restarts.
-*   **Cons:** High complexity. Chrome assigns **new** Tab IDs when tabs are restored after a browser restart. We would need complex heuristics (matching URLs, titles, and order) to map the newly created tabs back to the saved state in `chrome.storage.local`. Garbage collection is required to clear out data for closed tabs.
-
-#### 4. Offscreen Document
-Manifest V3 allows extensions to create a hidden "Offscreen Document" to perform tasks the Service Worker cannot. We could hold the state in the Offscreen Document's DOM or variables.
-*   **Pros:** Keeps state alive longer than a typical Service Worker lifecycle.
-*   **Cons:** Overkill for simple key-value storage. Still loses data on browser restart, facing the same Tab ID mapping issues as approach #3.
-
-#### 5. Injecting State into Page `sessionStorage`
-We could use content scripts to inject the TST state directly into the `sessionStorage` of the webpage loaded in the tab.
-*   **Pros:** `sessionStorage` is automatically restored by Chrome when a tab is restored after a browser restart, elegantly solving the Tab ID change problem.
-*   **Cons:** Highly fragile. Requires content script injection on *every* page, which fails on restricted URLs (like `chrome://` pages or the Web Store). If a tab crashes or navigates cross-origin, the state might be lost or become complex to track.
-
-### Recommendation for POC
-For the initial POC, **Approach #1 (In-Memory Store with Keep-Alive)** combined with **Approach #2 (`chrome.storage.session`)** is recommended to mock the API structure quickly without worrying about complex cross-session restoration logic. Full persistence across restarts (Approach #3) should be deferred until the core sidebar functionality is proven in Chrome.
-
-## 7. Conclusion & Level of Effort
+## 6. Conclusion & Level of Effort
 
 Creating a **simplified proof-of-concept (POC)** that displays a tree of tabs in the Chrome Side Panel is highly feasible. It requires:
 1. Updating `manifest.json`.
