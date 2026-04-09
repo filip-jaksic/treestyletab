@@ -103,3 +103,22 @@ if (typeof browser === 'undefined' && typeof chrome !== 'undefined') {
     };
   }
 }
+
+if (typeof globalThis.matchMedia === 'undefined') {
+  globalThis.matchMedia = () => ({ matches: false, addListener: () => {}, removeListener: () => {} });
+}
+
+if (typeof globalThis.location === 'undefined') {
+  globalThis.location = { host: 'unknown-host', reload: () => {} };
+}
+
+if (typeof document === 'undefined') {
+  globalThis.document = {
+    title: '',
+    createElement: () => ({}),
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    addEventListener: () => {},
+    removeEventListener: () => {}
+  };
+}

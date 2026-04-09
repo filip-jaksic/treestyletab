@@ -653,7 +653,7 @@ async function onNewTabTracked(tab, info) {
 
     if (TabsStore.ensureLivingItem(tab)) { // it can be removed while waiting
       win.openingTabs.add(tab.id);
-      setTimeout(() => { // because window.requestAnimationFrame is decelerated for an invisible document.
+      setTimeout(() => { // because globalThis.requestAnimationFrame is decelerated for an invisible document.
         if (!TabsStore.windows.get(tab.windowId)) // it can be removed while waiting
           return;
         win.openingTabs.delete(tab.id);
@@ -1128,7 +1128,7 @@ async function onAttached(tabId, attachInfo) {
           attachInfo.$TST_retryCount = 0;
         if (attachInfo.$TST_retryCount < 10) {
           attachInfo.$TST_retryCount++;
-          setTimeout(() => onAttached(tabId, attachInfo), 0); // because window.requestAnimationFrame is decelerated for an invisible document.
+          setTimeout(() => onAttached(tabId, attachInfo), 0); // because globalThis.requestAnimationFrame is decelerated for an invisible document.
           return;
         }
         console.log(`tabs.onAttached: the tab ${tabId} or the window ${attachInfo.newWindowId} is already closed. `);

@@ -106,7 +106,7 @@ function setSuccessor(tabId, successorTabId = -1) {
     if (!error ||
         !error.message ||
         (!error.message.startsWith('Invalid successorTabId') &&
-         // This error may happen at the time just after a tab is detached from its original window.
+         // This error may happen at the time just after a tab is detached from its original globalThis.
          !error.message.startsWith('Successor tab must be in the same window as the tab being updated')))
       throw error;
   }));

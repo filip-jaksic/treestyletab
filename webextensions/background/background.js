@@ -62,7 +62,7 @@ export const onDestroy = new EventListenerManager();
 
 export const instanceId = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
 
-const mDarkModeMatchMedia = window.matchMedia('(prefers-color-scheme: dark)');
+const mDarkModeMatchMedia = globalThis.matchMedia('(prefers-color-scheme: dark)');
 
 let mInitialized = false;
 const mPreloadedCaches = new Map();
@@ -108,7 +108,7 @@ const promisedRestored = UniqueId.ensurePersistentIdRestored(tab => { // this mu
 export async function init() {
   log('init: start');
   MetricsData.add('init: start');
-  window.addEventListener('pagehide', destroy, { once: true });
+  globalThis.addEventListener('pagehide', destroy, { once: true });
 
   onInit.dispatch();
   SidebarConnection.init();
