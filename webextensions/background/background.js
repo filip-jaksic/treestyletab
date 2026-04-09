@@ -4,6 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 'use strict';
+import '/chrome-polyfill.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 

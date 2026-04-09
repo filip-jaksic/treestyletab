@@ -48,7 +48,7 @@ export function isGrantedSync(permissions) {
 }
 
 // cache last state
-for (const permissions of [ALL_URLS, BOOKMARKS, CLIPBOARD_READ, TAB_HIDE]) {
+for (const permissions of [ALL_URLS, BOOKMARKS, CLIPBOARD_READ]) {
   isGranted(permissions);
 }
 
